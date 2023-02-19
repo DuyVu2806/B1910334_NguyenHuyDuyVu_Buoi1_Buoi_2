@@ -66,7 +66,7 @@ exports.update = async (req, res, next) => {
         }
         return res.send({ message: "Contact was updated successfully" });
     } catch (error) {
-        return new (
+        return next (
             new ApiError(500, `error updating contact with id=${req.params.id}`)
         );
     }
