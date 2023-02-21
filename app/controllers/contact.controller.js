@@ -22,7 +22,7 @@ exports.findAll = async (req, res, next) => {
     let documents = [];
 
     try {
-        const contactService = ContactService(MongoDB.client);
+        const contactService = new ContactService(MongoDB.client);
         const { name } = req.query;
         if (name) {
             documents = await contactService.findByName(name);
@@ -30,6 +30,7 @@ exports.findAll = async (req, res, next) => {
             documents = await contactService.find({});
         }
     } catch (error) {
+        console.log(error);
         return next(
             new ApiError(500, "An error occurred while retrieving contacts")
         );
@@ -66,7 +67,7 @@ exports.update = async (req, res, next) => {
         }
         return res.send({ message: "Contact was updated successfully" });
     } catch (error) {
-        return next (
+        return next(
             new ApiError(500, `error updating contact with id=${req.params.id}`)
         );
     }
@@ -97,9 +98,11 @@ exports.findAllFavorite = async (req, res, next) => {
         return res.send(documents)
     } catch (error) {
         return next(
-            500,
-            "An error occurred while retrieving favorite contacts"
-        )
+            new ApiError(
+                500,
+                "An error occurred while retrieving favorite contacts"
+            )
+        );
     };
 };
 
